@@ -1,8 +1,22 @@
-<nav>
-  <ul>
-    <li><a routerLink="/users">Lista de Usuários</a></li>
-    <li><a routerLink="/users/create">Criar Usuário</a></li>
-  </ul>
-</nav>
+<div class="app-bg-grid" aria-hidden="true"></div>
 
-<router-outlet></router-outlet>
+<header class="topbar glass">
+  <a routerLink="/users" class="brand">
+    <span class="brand-name">Usuários<b>.</b></span>
+  </a>
+
+  <nav class="nav">
+    <a routerLink="/users" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-link">
+      Lista
+    </a>
+    <a routerLink="/users/create" routerLinkActive="active" class="nav-link nav-cta">
+      + Novo usuário
+    </a>
+  </nav>
+</header>
+
+<main class="shell">
+  <router-outlet></router-outlet>
+</main>
+
+<app-toast></app-toast>

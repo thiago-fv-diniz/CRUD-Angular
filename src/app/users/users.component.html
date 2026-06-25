@@ -1,17 +1,76 @@
-<h1>Usuários</h1>
+<section class="page-head">
+  <div>
+    <h1 class="title">Usuários</h1>
+    <p class="subtitle">Gerencie quem tem acesso — busque, edite ou remova.</p>
+  </div>
 
-<table *ngIf="responseUsers">
-    <thead>
-        <td><b>Nome</b></td>
-        <td><b>Sobrenome</b></td>
-        <td><b>...</b></td>
-    </thead>
+  <label class="search glass">
+    <span class="search-ic">⌕</span>
+    <input class="search-input" type="text" placeholder="Buscar por nome ou e-mail…" [(ngModel)]="search">
+  </label>
+</section>
 
-    <tbody>
-        <tr *ngFor="let user of responseUsers.data">
-            <td>{{user.first_name}}</td>
-            <td>{{user.last_name}}</td>
-            <td routerLink="/users/update/{{user.id}}"><u>EDITAR</u></td>
-        </tr>
-    </tbody>
-</table>
+<!-- carregando -->
+<div class="grid" *ngIf="loading">
+  <div class="card glass skel-card" *ngFor="let s of skeletons">
+    <div class="skeleton" style="width:74px;height:74px;border-radius:50%"></div>
+    <div class="skeleton" style="width:60%;height:16px;margin-top:20px"></div>
+    <div class="skeleton" style="width:85%;height:12px;margin-top:12px"></div>
+    <div class="skeleton" style="width:70%;height:36px;border-radius:999px;margin-top:22px"></div>
+  </div>
+</div>
+
+<!-- erro -->
+<div class="state glass" *ngIf="error && !loading">
+  <h3>Algo deu errado</h3>
+  <p>Não consegui carregar os usuários.</p>
+  <button class="btn btn-primary" (click)="load()">Tentar de novo</button>
+</div>
+
+<!-- grid de cards -->
+<div class="grid" *ngIf="!loading && !error">
+  <article
+    class="card glass"
+    *ngFor="let u of filtered; trackBy: trackById"
+    [class.removing]="removingId === u.id"
+    (mousemove)="onMove($event)"
+    (mouseleave)="onLeave($event)">
+
+    <div class="spot" aria-hidden="true"></div>
+
+    <div class="avatar-wrap">
+      <span class="ring" aria-hidden="true"></span>
+      <img class="avatar" [src]="u.image" [alt]="u.firstName" loading="lazy">
+    </div>
+
+    <h3 class="name">{{ u.firstName }} {{ u.lastName }}</h3>
+    <p class="email">{{ u.email }}</p>
+
+    <div class="actions" *ngIf="confirmId !== u.id">
+      <button class="btn btn-ghost" routerLink="/users/update/{{ u.id }}">Editar</button>
+      <button class="btn btn-ghost danger-ghost" (click)="askDelete(u.id)">Excluir</button>
+    </div>
+
+    <div class="confirm" *ngIf="confirmId === u.id">
+      <span>Remover este usuário?</span>
+      <div class="confirm-actions">
+        <button class="btn btn-danger" (click)="confirmDelete(u)">Sim, remover</button>
+        <button class="btn btn-ghost" (click)="cancelDelete()">Cancelar</button>
+      </div>
+    </div>
+  </article>
+
+  <!-- vazio / sem resultado -->
+  <div class="state glass span-all" *ngIf="filtered.length === 0">
+    <h3>Nada por aqui</h3>
+    <p *ngIf="search">Nenhum usuário corresponde a "{{ search }}".</p>
+    <p *ngIf="!search">Não há usuários nesta página.</p>
+  </div>
+</div>
+
+<!-- paginação -->
+<nav class="pager" *ngIf="!loading && !error && totalPages > 1">
+  <button class="btn btn-ghost" (click)="prev()" [disabled]="page <= 1">← Anterior</button>
+  <span class="pager-info">Página <b>{{ page }}</b> de {{ totalPages }}</span>
+  <button class="btn btn-ghost" (click)="next()" [disabled]="page >= totalPages">Próxima →</button>
+</nav>

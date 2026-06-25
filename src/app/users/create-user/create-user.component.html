@@ -1,23 +1,27 @@
-<h2>Criar Usuário</h2>
+<a routerLink="/users" class="back">← Voltar para a lista</a>
 
-<div>
-    <label>Nome:
-        <input placeholder="Insira o nome" [(ngModel)]="request.name">
+<section class="form-card glass">
+  <header class="form-head">
+    <h1>Novo usuário</h1>
+    <p>Preencha os dados para adicionar alguém à lista.</p>
+  </header>
+
+  <form (ngSubmit)="save()" autocomplete="off">
+    <label class="field">
+      <span>Nome</span>
+      <input class="input" name="firstName" placeholder="Ex.: Ana" [(ngModel)]="request.firstName">
     </label>
-    <br><br>
-    <label>Profissão:
-        <input placeholder="Insira a Profissão" [(ngModel)]="request.job">
+
+    <label class="field">
+      <span>Sobrenome</span>
+      <input class="input" name="lastName" placeholder="Ex.: Souza" [(ngModel)]="request.lastName">
     </label>
-    <br><br>
-    <button (click)="save()">Salvar</button>
-</div>
 
-<br><br>
-
-<div *ngIf="response">
-    <h3>Criado com Sucesso!!</h3>
-    <label>Nome: {{response.name}}</label><br>
-    <label>Profissão: {{response.job}}</label><br>
-    <label>ID: {{response.id}}</label><br>
-    <label>Criado em: {{response.createdAt}}</label><br>
-</div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="!valid || saving">
+        {{ saving ? 'Salvando…' : 'Salvar usuário' }}
+      </button>
+      <a routerLink="/users" class="btn btn-ghost">Cancelar</a>
+    </div>
+  </form>
+</section>

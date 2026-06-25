@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RequestCreate, RequestUpdate, ResponseCreate, ResponseUpdate, ResponseUser, ResponseUsers } from './user.model';
+import { ResponseUsers, User, UserPayload } from './user.model';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -8,27 +8,29 @@ import { HttpClient } from '@angular/common/http';
 })
 export class UserService {
 
-  private url = 'https://reqres.in/api/users';
+  private url = 'https://dummyjson.com/users';
+  private limit = 8;
 
   constructor(private http: HttpClient) { }
 
-  getUsers(): Observable<ResponseUsers> {
-    return this.http.get<ResponseUsers>(this.url);
+  getUsers(page: number = 1): Observable<ResponseUsers> {
+    const skip = (page - 1) * this.limit;
+    return this.http.get<ResponseUsers>(`${this.url}?limit=${this.limit}&skip=${skip}`);
   }
 
-  createUsers(request: RequestCreate): Observable<ResponseCreate>{
-    return this.http.post<ResponseCreate>(this.url, request);
+  getUser(id: string): Observable<User> {
+    return this.http.get<User>(`${this.url}/${id}`);
   }
 
-  getUser(id: string): Observable<ResponseUser> {
-    const _url = `${this.url}/${id}`;
-
-    return this.http.get<ResponseUser>(_url);
+  createUser(payload: UserPayload): Observable<User> {
+    return this.http.post<User>(`${this.url}/add`, payload);
   }
 
-  updateUser(id: string, request: RequestUpdate): Observable<ResponseUpdate> {
-    const _url = `${this.url}/${id}`;
+  updateUser(id: string, payload: UserPayload): Observable<User> {
+    return this.http.put<User>(`${this.url}/${id}`, payload);
+  }
 
-    return this.http.put<ResponseUpdate>(_url, request);
+  deleteUser(id: number): Observable<User> {
+    return this.http.delete<User>(`${this.url}/${id}`);
   }
 }

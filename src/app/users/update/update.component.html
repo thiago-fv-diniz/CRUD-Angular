@@ -1,13 +1,33 @@
-<h2>Atualizar Usuário</h2>
+<a routerLink="/users" class="back">← Voltar para a lista</a>
 
-<div *ngIf="request">
-    <label>Nome:
-        <input placeholder="Insira o nome" [(ngModel)]="request.name">
+<section class="form-card glass">
+  <header class="form-head">
+    <h1>Editar usuário</h1>
+    <p>Atualize as informações e salve as mudanças.</p>
+  </header>
+
+  <div class="form-skel" *ngIf="loading">
+    <div class="skeleton" style="height:50px;border-radius:16px"></div>
+    <div class="skeleton" style="height:50px;border-radius:16px;margin-top:20px"></div>
+    <div class="skeleton" style="height:46px;width:180px;border-radius:999px;margin-top:26px"></div>
+  </div>
+
+  <form *ngIf="!loading && request as r" (ngSubmit)="update()" autocomplete="off">
+    <label class="field">
+      <span>Nome</span>
+      <input class="input" name="firstName" placeholder="Nome" [(ngModel)]="r.firstName">
     </label>
-    <br><br>
-    <label>Profissão:
-        <input placeholder="Insira a Profissão" [(ngModel)]="request.job">
+
+    <label class="field">
+      <span>Sobrenome</span>
+      <input class="input" name="lastName" placeholder="Sobrenome" [(ngModel)]="r.lastName">
     </label>
-    <br><br>
-    <button (click)="update()">Atualizar</button>
-</div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="!valid || saving">
+        {{ saving ? 'Salvando…' : 'Atualizar' }}
+      </button>
+      <a routerLink="/users" class="btn btn-ghost">Cancelar</a>
+    </div>
+  </form>
+</section>
